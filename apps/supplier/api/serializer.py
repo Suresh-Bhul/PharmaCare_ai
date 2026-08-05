@@ -13,6 +13,9 @@ from rest_framework import serializers
 from apps.supplier.models import Supplier
 from rest_framework.validators import ValidationError
 
+# #best recommended import
+# from rest_framework.exceptions/serializers import ValidationError
+
 
 class SupplierSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)

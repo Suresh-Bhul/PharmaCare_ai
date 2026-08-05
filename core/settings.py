@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'apps.user',
     'apps.customer',
     'apps.supplier',
+    'apps.medicine',
 
     #Third party apps
     'rest_framework',
