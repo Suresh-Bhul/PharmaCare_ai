@@ -45,7 +45,6 @@ def supplier_update(request, id):
 def supplier_delete(request, id):
     # supplier = Supplier.objects.filter(id = id).delete()
     supplier = get_object_or_404(Supplier, id = id).delete()  #"detail": "No Supplier matches the given query."
-
     return Response({
         "message": "Supplier deleted successfully"
     })
