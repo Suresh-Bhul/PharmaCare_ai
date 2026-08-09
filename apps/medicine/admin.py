@@ -1,5 +1,5 @@
 from django.contrib import admin
-from apps.medicine.models import Medicine
+from apps.medicine.models import Category, Medicine
 
 # Register your models here.
 @admin.register(Medicine)
@@ -67,6 +67,7 @@ class MedicineAdmin(admin.ModelAdmin):
             "fields": (
                 "reorder_level",
                 "storage_location",
+                "category",
             )
         }),
         ("Dates", {
@@ -78,3 +79,5 @@ class MedicineAdmin(admin.ModelAdmin):
             )
         }),
     )
+
+admin.site.register(Category)

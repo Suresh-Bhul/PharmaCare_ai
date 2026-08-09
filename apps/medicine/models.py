@@ -1,6 +1,17 @@
 from django.db import models
 
 # Create your models here.
+class Category(models.Model):
+    name = models.CharField(max_length=10, verbose_name="Category")
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = "category"
+
+
 class Dosage_form(models.TextChoices):
     TABLET = "tablet", "Tablet"
     CAPSULE = "capsule", "Capsule"
@@ -34,11 +45,13 @@ class MedicineStatus(models.TextChoices):
     DISCONTINUED = "discontinued", "Discontinued"
     EXPIRED = "expired", "Expired"
 
+
 class Medicine(models.Model):
     name = models.CharField(max_length=80, verbose_name="Medicine Name")
     generic_name = models.CharField(max_length=100, blank=True)
     brand_name = models.CharField(max_length=100, blank=True)
     medicine_code = models.IntegerField(unique=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
     dosage_form = models.CharField(max_length=20, choices=Dosage_form.choices, default=Dosage_form.TABLET)
     strength = models.CharField(max_length=10, help_text="store mg/mcq/IU/mL of medicine",)
     barcode = models.PositiveIntegerField(unique=True)
