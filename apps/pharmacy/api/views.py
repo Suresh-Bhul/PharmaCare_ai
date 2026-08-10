@@ -6,6 +6,8 @@ from apps.pharmacy.api.serializer import PharmacySerializer
 from apps.pharmacy.models import Pharmacy
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from apps.pharmacy.api.service import AccessChha
+
 #class-based_view-api -we don't use decorators
 
 #Pharmacy-list
@@ -14,6 +16,7 @@ class PharmacyView(GenericAPIView):
     serializer_class = PharmacySerializer
 
     permission_classes = [IsAuthenticated]  #check login or not
+    permission_classes = [AccessChha]       #Own permission_classes
 
     #View
     def get(self, request, *args, **kwargs):

@@ -5,12 +5,14 @@ from rest_framework import status
 from apps.medicine.api.serializer import MedicineSerializer
 from apps.medicine.models import Medicine
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAdminUser
 #class-based_view-api -we don't use decorators
 
 #medicine-list
 class MedicineView(GenericAPIView):
     queryset = Medicine
     serializer_class = MedicineSerializer
+    permission_classes = [IsAdminUser]      #check login or not
 
     #View
     def get(self, request, *args, **kwargs):
