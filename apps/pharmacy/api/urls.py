@@ -1,9 +1,9 @@
 from django.urls import path
-from apps.medicine.api.views import MedicineView, UpdateMedicineView 
+from apps.pharmacy.api.views import PharmacyView, UpdatePharmacyView 
 
 urlpatterns = [
-    path('medicine-list/', MedicineView.as_view(), name="medicine-list"),
-    path('medicine-update/<int:id>', UpdateMedicineView.as_view(), name="medicine-update"),
+    path('pharmacy-list/', PharmacyView.as_view(), name="pharmacy-list"),
+    path('pharmacy-update/<int:id>', UpdatePharmacyView.as_view(), name="pharmacy-update"),
 
 ]
 
