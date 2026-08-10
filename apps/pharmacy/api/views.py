@@ -5,12 +5,15 @@ from rest_framework import status
 from apps.pharmacy.api.serializer import PharmacySerializer
 from apps.pharmacy.models import Pharmacy
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 #class-based_view-api -we don't use decorators
 
 #Pharmacy-list
 class PharmacyView(GenericAPIView):
     queryset = Pharmacy
     serializer_class = PharmacySerializer
+
+    permission_classes = [IsAuthenticated]  #check login or not
 
     #View
     def get(self, request, *args, **kwargs):
