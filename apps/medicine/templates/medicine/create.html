@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Add Medicine</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: "#eff6ff",
+                100: "#dbeafe",
+                500: "#3b82f6",
+                600: "#2563eb",
+                700: "#1d4ed8",
+              },
+            },
+          },
+        },
+      };
+    </script>
+  </head>
+
+  <body class="min-h-screen bg-slate-50">
+    <div class="min-h-screen px-4 py-8 sm:px-6 lg:px-8">
+      <!-- =========================================
+         PAGE CONTAINER
+    ========================================== -->
+
+      <div class="mx-auto max-w-5xl">
+        <!-- =========================================
+             HEADER
+        ========================================== -->
+
+        <div class="mb-6">
+          <a
+            href="{% url 'medicine_list' %}"
+            class="mb-4 inline-flex items-center gap-2 text-sm font-medium text-slate-500 transition hover:text-blue-600"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+
+            Back to Medicines
+          </a>
+
+          <div class="flex items-center gap-4">
+            <div
+              class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg shadow-blue-500/20"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9 3h6m-7 4h8m-9 4h10m-9 4h8m-7 4h6"
+                />
+              </svg>
+            </div>
+
+            <div>
+              <h1
+                class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl"
+              >
+                Add New Medicine
+              </h1>
+
+              <p class="mt-1 text-sm text-slate-500">
+                Add medicine details to your pharmacy inventory.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- =========================================
+             FORM CARD
+        ========================================== -->
+
+        <div
+          class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)]"
+        >
+          <!-- Form Header -->
+
+          <div
+            class="border-b border-slate-200 bg-gradient-to-r from-blue-50 via-white to-indigo-50 px-5 py-5 sm:px-8"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-600"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+              </div>
+
+              <div>
+                <h2 class="font-bold text-slate-900">Medicine Information</h2>
+
+                <p class="text-xs text-slate-500">
+                  Enter accurate information for this medicine.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========================================
+                 FORM
+            ========================================== -->
+
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="px-5 py-6 sm:px-8 sm:py-8">
+              <!-- =====================================
+                         FORM ERRORS
+                    ====================================== -->
+
+              {% if form.non_field_errors %}
+
+              <div
+                class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+              >
+                <div class="flex gap-3">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5 shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M12 9v3m0 4h.01M10.29 3.86l-7.82 13.5A2 2 0 004.2 20h15.6a2 2 0 001.73-2.64l-7.82-13.5a2 2 0 00-3.42 0z"
+                    />
+                  </svg>
+
+                  <div>
+                    {% for error in form.non_field_errors %}
+
+                    <p>{{ error }}</p>
+
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+
+              {% endif %}
+
+              <!-- =====================================
+                         BASIC INFORMATION
+                    ====================================== -->
+
+              <div class="mb-8">
+                <div class="mb-5">
+                  <h3 class="text-base font-bold text-slate-900">
+                    Basic Information
+                  </h3>
+
+                  <p class="mt-1 text-xs text-slate-500">
+                    Identify the medicine and its category.
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <!-- Name -->
+
+                  <div>
+                    <label
+                      for="{{ form.name.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Medicine Name {% if form.name.field.required %}
+                      <span class="text-red-500">*</span>
+                      {% endif %}
+                    </label>
+
+                    {{ form.name }} {% if form.name.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.name.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Generic Name -->
+
+                  <div>
+                    <label
+                      for="{{ form.generic_name.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Generic Name
+                    </label>
+
+                    {{ form.generic_name }} {% if form.generic_name.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.generic_name.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Brand -->
+
+                  <div>
+                    <label
+                      for="{{ form.brand_name.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Brand Name
+                    </label>
+
+                    {{ form.brand_name }} {% if form.brand_name.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.brand_name.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Category -->
+
+                  <div>
+                    <label
+                      for="{{ form.category.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Category
+                    </label>
+
+                    {{ form.category }} {% if form.category.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.category.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- =====================================
+                         MEDICINE DETAILS
+                    ====================================== -->
+
+              <div class="mb-8 border-t border-slate-100 pt-8">
+                <div class="mb-5">
+                  <h3 class="text-base font-bold text-slate-900">
+                    Medicine Details
+                  </h3>
+
+                  <p class="mt-1 text-xs text-slate-500">
+                    Specify dosage, strength and identification details.
+                  </p>
+                </div>
+
+                <div
+                  class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                >
+                  <!-- Medicine Code -->
+
+                  <div>
+                    <label
+                      for="{{ form.medicine_code.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Medicine Code
+                    </label>
+
+                    {{ form.medicine_code }} {% if form.medicine_code.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.medicine_code.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Dosage -->
+
+                  <div>
+                    <label
+                      for="{{ form.dosage_form.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Dosage Form
+                    </label>
+
+                    {{ form.dosage_form }} {% if form.dosage_form.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.dosage_form.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Strength -->
+
+                  <div>
+                    <label
+                      for="{{ form.strength.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Strength
+                    </label>
+
+                    {{ form.strength }} {% if form.strength.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.strength.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Barcode -->
+
+                  <div>
+                    <label
+                      for="{{ form.barcode.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Barcode
+                    </label>
+
+                    {{ form.barcode }} {% if form.barcode.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.barcode.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Tax -->
+
+                  <div>
+                    <label
+                      for="{{ form.tax_rate.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Tax Rate (%)
+                    </label>
+
+                    {{ form.tax_rate }} {% if form.tax_rate.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.tax_rate.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Reorder -->
+
+                  <div>
+                    <label
+                      for="{{ form.reorder_level.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Reorder Level
+                    </label>
+
+                    {{ form.reorder_level }} {% if form.reorder_level.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.reorder_level.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- =====================================
+                         PRICING
+                    ====================================== -->
+
+              <div class="mb-8 border-t border-slate-100 pt-8">
+                <div class="mb-5">
+                  <h3 class="text-base font-bold text-slate-900">Pricing</h3>
+
+                  <p class="mt-1 text-xs text-slate-500">
+                    Add purchase and selling price information.
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+                  <!-- Purchase -->
+
+                  <div>
+                    <label
+                      for="{{ form.purchase_price.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Purchase Price
+                    </label>
+
+                    <div class="relative">
+                      <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400"
+                      >
+                        Rs.
+                      </span>
+
+                      {{ form.purchase_price }}
+                    </div>
+
+                    {% if form.purchase_price.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.purchase_price.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Selling -->
+
+                  <div>
+                    <label
+                      for="{{ form.selling_price.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Selling Price
+                    </label>
+
+                    <div class="relative">
+                      <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-medium text-slate-400"
+                      >
+                        Rs.
+                      </span>
+
+                      {{ form.selling_price }}
+                    </div>
+
+                    {% if form.selling_price.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.selling_price.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              <!-- =====================================
+                         STORAGE & DATES
+                    ====================================== -->
+
+              <div class="border-t border-slate-100 pt-8">
+                <div class="mb-5">
+                  <h3 class="text-base font-bold text-slate-900">
+                    Storage & Dates
+                  </h3>
+
+                  <p class="mt-1 text-xs text-slate-500">
+                    Manage storage location and medicine validity.
+                  </p>
+                </div>
+
+                <div
+                  class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                >
+                  <!-- Storage -->
+
+                  <div>
+                    <label
+                      for="{{ form.storage_location.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Storage Location
+                    </label>
+
+                    {{ form.storage_location }}
+                    {% if form.storage_location.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.storage_location.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Manufacture -->
+
+                  <div>
+                    <label
+                      for="{{ form.manufacture_date.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Manufacture Date
+                    </label>
+
+                    {{ form.manufacture_date }} 
+                    {% if form.manufacture_date.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.manufacture_date.errors.0 }}
+                    </p>
+
+                   {% endif %}
+                  </div>
+
+                  <!-- Expiry -->
+
+                  <div>
+                    <label
+                      for="{{ form.expiry_date.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Expiry Date
+                    </label>
+
+                    {{ form.expiry_date }} {% if form.expiry_date.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.expiry_date.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+
+                  <!-- Status -->
+
+                  <div>
+                    <label
+                      for="{{ form.status.id_for_label }}"
+                      class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                      Status
+                    </label>
+
+                    {{ form.status }} {% if form.status.errors %}
+
+                    <p class="mt-1 text-xs text-red-600">
+                      {{ form.status.errors.0 }}
+                    </p>
+
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- =========================================
+                     FOOTER ACTIONS
+                ========================================== -->
+
+            <div
+              class="flex flex-col-reverse gap-3 border-t border-slate-200 bg-slate-50 px-5 py-5 sm:flex-row sm:justify-end sm:px-8"
+            >
+              <a
+                href="#"
+                class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-100"
+              >
+                Cancel
+              </a>
+
+              <button
+                type="submit"
+                class="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+
+                Save Medicine
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- =========================================
+             FOOTER NOTE
+        ========================================== -->
+
+        <p class="mt-4 text-center text-xs text-slate-400">
+          Make sure all medicine information is accurate before saving.
+        </p>
+      </div>
+    </div>
+
+    <!-- =========================================
+     TAILWIND FORM FIELD STYLING
+========================================== -->
+
+    <style>
+      /*
+     * Django automatically generates the form controls.
+     * These selectors style the controls without
+     * requiring changes to forms.py.
+     */
+
+      input[type="text"],
+      input[type="number"],
+      input[type="date"],
+      input[type="email"],
+      input[type="url"],
+      input[type="tel"],
+      input[type="password"],
+      select,
+      textarea {
+        width: 100%;
+
+        border: 1px solid #e2e8f0;
+
+        border-radius: 0.75rem;
+
+        background-color: #f8fafc;
+
+        padding: 0.7rem 0.9rem;
+
+        font-size: 0.875rem;
+
+        color: #334155;
+
+        outline: none;
+
+        transition: all 0.2s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      input[type="date"]:focus,
+      input[type="email"]:focus,
+      input[type="url"]:focus,
+      input[type="tel"]:focus,
+      input[type="password"]:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #3b82f6;
+
+        background-color: #ffffff;
+
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #94a3b8;
+      }
+
+      select {
+        cursor: pointer;
+      }
+
+      textarea {
+        min-height: 100px;
+
+        resize: vertical;
+      }
+
+      /*
+     * Price inputs have an "Rs." prefix.
+     */
+
+      input[name="purchase_price"],
+      input[name="selling_price"] {
+        padding-left: 2.5rem;
+      }
+
+      /*
+     * Django required field errors
+     */
+
+      .errorlist {
+        list-style: none;
+
+        margin: 0.35rem 0 0;
+
+        padding: 0;
+
+        color: #dc2626;
+
+        font-size: 0.75rem;
+      }
+    </style>
+  </body>
+</html>

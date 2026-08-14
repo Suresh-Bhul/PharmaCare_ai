@@ -56,7 +56,6 @@ class Medicine(models.Model):
     strength = models.CharField(max_length=10, help_text="store mg/mcq/IU/mL of medicine",)
     barcode = models.PositiveIntegerField(unique=True)
     purchase_price = models.DecimalField(max_digits=10,decimal_places=2)
-    purchase_price = models.DecimalField(max_digits=10,decimal_places=2)
     selling_price = models.DecimalField(max_digits=10,decimal_places=2)
     tax_rate = models.DecimalField(max_digits=10,decimal_places=2)
     reorder_level = models.IntegerField(default=10)
