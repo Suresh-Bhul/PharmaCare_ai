@@ -9,4 +9,4 @@ class AccessChha(BasePermission):       #Make_own permission_classes
     """
 
     def has_permission(self, request, view):
-        return True(request.user and request.user.is_superuser)
+        return bool(request.user and request.user.is_superuser)
