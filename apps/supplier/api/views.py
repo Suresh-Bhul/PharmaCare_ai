@@ -4,7 +4,12 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from django.shortcuts import get_object_or_404
+from drf_spectacular.utils import extend_schema
 #function-based_view-api we use decorators
+
+@extend_schema(summary="get all info",
+description="get json response of supplier serializer",
+tags=['Distributor'])
 
 #List_supplier
 @api_view(['GET'])

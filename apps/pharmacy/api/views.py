@@ -7,9 +7,11 @@ from apps.pharmacy.models import Pharmacy
 from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from apps.pharmacy.api.service import AccessChha
+from drf_spectacular.utils import extend_schema
 
 #class-based_view-api -we don't use decorators
 
+@extend_schema(tags=['Medical Store'])
 #Pharmacy-list
 class PharmacyView(GenericAPIView):
     queryset = Pharmacy
@@ -17,6 +19,10 @@ class PharmacyView(GenericAPIView):
 
     permission_classes = [IsAuthenticated]  #check login or not
     permission_classes = [AccessChha]       #Own permission_classes
+
+    
+    @extend_schema(summary="get all information",
+    description="get json response of pharmacy serializer")
 
     #View
     def get(self, request, *args, **kwargs):
