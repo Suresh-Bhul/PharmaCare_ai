@@ -30,6 +30,8 @@ urlpatterns = [
     path('api/supplier/', include('apps.supplier.api.urls')),
     path('api/medicine/', include('apps.medicine.api.urls')),
     path('api/pharmacy/', include('apps.pharmacy.api.urls')),
+    path('api/purchase/', include('apps.purchase.api.urls')),
+
 
     #Apps/CRUD Oerations
     path('apps/medicine/', include('apps.medicine.urls')),

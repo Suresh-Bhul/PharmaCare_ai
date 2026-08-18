@@ -11,7 +11,7 @@ class District(models.Model):
 
 class Pharmacy(models.Model):
     name = models.CharField(max_length=150, verbose_name="Pharmacy Name")
-    registration_number = models.PositiveIntegerField(max_length=50, unique=True, verbose_name="Registration Number")
+    registration_number = models.CharField(max_length=50, unique=True, verbose_name="Registration Number")
     email = models.EmailField(unique=True)
     phone = models.PositiveBigIntegerField()
     website = models.URLField(blank=True, null=True)

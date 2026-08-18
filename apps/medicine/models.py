@@ -1,4 +1,6 @@
 from django.db import models
+from apps.supplier.models import Supplier
+
 
 # Create your models here.
 class Category(models.Model):
@@ -55,14 +57,10 @@ class Medicine(models.Model):
     dosage_form = models.CharField(max_length=20, choices=Dosage_form.choices, default=Dosage_form.TABLET)
     strength = models.CharField(max_length=10, help_text="store mg/mcq/IU/mL of medicine",)
     barcode = models.PositiveIntegerField(unique=True)
-    purchase_price = models.DecimalField(max_digits=10,decimal_places=2)
-    selling_price = models.DecimalField(max_digits=10,decimal_places=2)
-    tax_rate = models.DecimalField(max_digits=10,decimal_places=2)
     reorder_level = models.IntegerField(default=10)
     storage_location = models.CharField(max_length=150,null=True,blank=True)
     manufacture_date = models.DateField()
     status = models.CharField(max_length=15, choices=MedicineStatus.choices, default=MedicineStatus.ACTIVE)
-    expiry_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -73,4 +71,22 @@ class Medicine(models.Model):
         db_table = "medicine"
         
 
+class MedicineBatch(models.Model):
+    medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
+    batch_number = models.PositiveIntegerField()
+    manufacturing_date = models.DateField()
+    expiry_date = models.DateField()
+    quantity = models.PositiveIntegerField(default=0)
+    purchase_price = models.DecimalField(decimal_places=2, max_digits=8)
+    selling_price = models.DecimalField(decimal_places=2, max_digits=8)
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    # supplier = models.ForeignKey('supplier.Supplier', on_delete=models.CASCADE) #Reduces circular import
+    received_date = models.DateField()
+    status = models.BooleanField(default=False)
 
+
+    class Meta:
+        db_table = "medicine-batch"
+
+    def __str__(self):
+        return self.medicine.name    

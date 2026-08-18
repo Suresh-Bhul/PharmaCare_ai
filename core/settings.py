@@ -43,6 +43,8 @@ INSTALLED_APPS = [
     'apps.supplier',
     'apps.medicine',
     'apps.pharmacy',
+    'apps.purchase',
+    'apps.inventory',
 
     #Third party apps
     'rest_framework',

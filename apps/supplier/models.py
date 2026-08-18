@@ -1,7 +1,6 @@
 from django.db import models
 
 # Create your models here.
-
 class Supplier(models.Model):
     company_name = models.CharField(max_length=60, help_text="Enter comaney name")
     contact_person = models.CharField(max_length=50)
