@@ -19,6 +19,7 @@ class Purchase(models.Model):
     discount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     tax = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     total = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+    is_purchase_verified = models.BooleanField(default=False)
     payment_status = models.CharField(max_length=20, choices=PaymentStatus.choices, default=PaymentStatus.PENDING)
     notes = models.TextField(blank=True, null=True)   
     created_at = models.DateTimeField(auto_now_add=True)

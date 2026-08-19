@@ -1,10 +1,13 @@
+from datetime import date
+from apps.medicine.api.service import create_medicine_batch
 from apps.purchase.api.serializer import PurchaseSerializer
-from apps.purchase.models import Purchase
+from apps.purchase.models import Purchase, PurchaseItem
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import api_view
 #class-based_view-api -we don't use decorators
 
 #Purchase-list
@@ -95,3 +98,32 @@ class UpdatePurchaseView(GenericAPIView):
         return Response({
         "message": "Purchase deleted successfully"
         },status.HTTP_204_NO_CONTENT)
+
+#Verify_purchase
+@api_view(['GET'])
+def verify_purchase(request, id):
+    purchase = get_object_or_404(Purchase, id = id)
+    if purchase.is_purchase_verified:
+        return Response({
+            "message": "Purchase is already verified, please contact admin"
+        }, status.HTTP_400_BAD_REQUEST)
+    else:
+        purchase_item = PurchaseItem.objects.filter(purchase=purchase)
+        for item in purchase_item:
+            create_medicine_batch(
+                medicine = item.medicine,
+                batch_number = item.batch_number,
+                manufacturing_date = item.manufacturing_date,
+                quantity = item. quantity,
+                supplier = purchase.supplier,
+                expiry_date = item.expiry_date,
+                purchase_price = item.unit_price,
+                selling_price = (35/100)* float(item.unit_price) + float(item.unit_price),
+                received_date = str(date.today()),
+            )
+        purchase.is_purchase_verified = True
+        purchase.save()
+
+        return Response({
+        "message": "Purchase is verified"
+        })

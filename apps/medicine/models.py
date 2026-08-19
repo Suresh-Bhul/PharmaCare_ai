@@ -73,7 +73,7 @@ class Medicine(models.Model):
 
 class MedicineBatch(models.Model):
     medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
-    batch_number = models.PositiveIntegerField()
+    batch_number = models.PositiveIntegerField(auto_created=True)
     manufacturing_date = models.DateField()
     expiry_date = models.DateField()
     quantity = models.PositiveIntegerField(default=0)

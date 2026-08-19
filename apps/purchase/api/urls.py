@@ -1,10 +1,10 @@
 from django.urls import path
-from apps.purchase.api.views import PurchaseView, UpdatePurchaseView
+from apps.purchase.api.views import PurchaseView, UpdatePurchaseView, verify_purchase
 
 urlpatterns = [
     path('purchase-list/', PurchaseView.as_view(), name="purchase-list"),
     path('purchase-update/<int:id>', UpdatePurchaseView.as_view(), name="purchase-update"),
-
+    path('verify_purchase/<int:id>', verify_purchase)
 
 ]
 
