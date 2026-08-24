@@ -33,7 +33,7 @@ urlpatterns = [
     path('api/pharmacy/', include('apps.pharmacy.api.urls')),
     path('api/purchase/', include('apps.purchase.api.urls')),
     # path('api/inventory/', include('apps.inventory.api.urls')),
-    # path('api/sales/', include('apps.sales.api.urls')),
+    path('api/sales/', include('apps.sales.api.urls')),
 
 
 

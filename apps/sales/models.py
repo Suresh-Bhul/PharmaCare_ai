@@ -38,7 +38,7 @@ class Sales(models.Model):
         db_table = "sales"
 
     def __str__(self):
-        return f"{self.sales.customer}"
+        return f"{self.customer}"
 
     def save(self, *args, **kwargs):
         if not self.invoice_number:
@@ -56,11 +56,9 @@ class Sales(models.Model):
 
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return f"{self.customer}"
-
+    
 class SalesItem(models.Model):
-    sales = models.ForeignKey(Sales, on_delete=models.CASCADE, related_name="sales_items")
+    sale = models.ForeignKey(Sales, on_delete=models.CASCADE, related_name="sale_items")
     medicine = models.ForeignKey(Medicine, on_delete=models.CASCADE)
     batch = models.ForeignKey('medicine.MedicineBatch', on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=0)

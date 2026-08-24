@@ -36,7 +36,7 @@ class SalesAdmin(admin.ModelAdmin):
 @admin.register(SalesItem)
 class SalesItemAdmin(admin.ModelAdmin):
     list_display = (
-        "sales",
+        "sale",
         "medicine",
         "batch",
         "quantity",
@@ -56,4 +56,4 @@ class SalesItemAdmin(admin.ModelAdmin):
         "medicine__name",
     )
 
-    autocomplete_fields = ["sales", "medicine", "batch"]
+    autocomplete_fields = ["sale", "medicine", "batch"]
