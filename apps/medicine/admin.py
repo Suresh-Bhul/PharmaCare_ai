@@ -12,6 +12,7 @@ class MedicineAdmin(admin.ModelAdmin):
         "dosage_form",
         "strength",
         "reorder_level",
+        "manufacture_date",
         "status",
         
     )
@@ -67,6 +68,7 @@ class MedicineAdmin(admin.ModelAdmin):
 
         ("Dates", {
             "fields": (
+                "manufacture_date",
                 "created_at",
                 "updated_at",
             )

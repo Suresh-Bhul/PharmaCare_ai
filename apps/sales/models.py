@@ -20,7 +20,7 @@ class PaymentMethod(models.TextChoices):
 
 
 class Sales(models.Model):
-    invoice_number = models.CharField(max_length=50, unique=True, editable=False)
+    invoice_number = models.CharField(max_length=50, unique=True,blank=True, null=True)
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
     sub_total = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     discount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
@@ -51,9 +51,7 @@ class Sales(models.Model):
                     last_number = 0
             else:
                 last_number = 0
-
             self.invoice_number = f"INV-{last_number + 1:04d}"
-
         super().save(*args, **kwargs)
 
     

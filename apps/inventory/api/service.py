@@ -2,7 +2,7 @@ from apps.inventory.models import InventoryTxn
 
 
 def create_inventory_txn(**kwargs):
-    batch = kwargs.get('batch')
+    batch = kwargs.get('batch_number')
     transaction_type = kwargs.get('transaction_type')
     quantity = kwargs.get('quantity')
     reference_id=kwargs.get('reference_id')

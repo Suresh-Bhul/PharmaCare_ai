@@ -25,15 +25,15 @@ class InventoryTxnAdmin(admin.ModelAdmin):
         "reference_id",
     )
 
-    readonly_fields = (
-        "batch",
-        "transaction_type",
-        "quantity",
-        "reference_id",
-        "previous_stock",
-        "new_stock",
-        "created_at",
-    )
+    # readonly_fields = (
+    #     "batch",
+    #     "transaction_type",
+    #     "quantity",
+    #     "reference_id",
+    #     "previous_stock",
+    #     "new_stock",
+    #     "created_at",
+    # )
 
     ordering = ("-created_at",)
 
