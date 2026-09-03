@@ -36,9 +36,9 @@ class SalesItemSerializer(serializers.ModelSerializer):
 
     
 class SalesSerializer(serializers.ModelSerializer):
-    sales_item = SalesItemSerializer(
-        many=True, write_only = True
-    )
+    sales_item = SalesItemSerializer(many=True, write_only = True)
+    total = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+    sub_total = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Sales
@@ -46,7 +46,9 @@ class SalesSerializer(serializers.ModelSerializer):
             "invoice_number",
             "customer",
             "payment_method",
-            "sales_item"
+            "sales_item",
+            "total",
+            "sub_total",
         ] 
 
     @transaction.atomic
@@ -87,5 +89,10 @@ class SalesSerializer(serializers.ModelSerializer):
             item['batch'].quantity -= item['quantity']
             item['batch'].save()
 
-        return validated_data
-        
+        return Sales
+    
+    def to_representation(self, instance):      #to_representation -> How to display data 
+        data = super().to_representation(instance)  
+        sales_item = SalesItem.objects.filter(sale = instance)
+        data['sales_item'] = SalesItemSerializer(sales_item, many=True).data
+        return data     #return [] - empty
