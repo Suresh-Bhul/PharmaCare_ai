@@ -11,4 +11,5 @@ dependencies = [
     "djangorestframework-simplejwt>=5.5.1",
     "drf-spectacular>=0.30.0",
     "markdown>=3.10.3",
+    "requests>=2.34.2",
 ]

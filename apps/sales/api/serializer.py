@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from apps.medicine.models import MedicineBatch
-from apps.sales.models import Sales, SalesItem
+from apps.sales.models import Sales, SalesItem, PaymentMethod
+from apps.sales.api.service import create_khalti_url
 
 from datetime import date, datetime
 from rest_framework.validators import ValidationError
@@ -57,25 +58,53 @@ class SalesSerializer(serializers.ModelSerializer):
         discount = 0
         sub_total = 0
         tax = 0
-
-
+        
+        product_details = []
+        
         for item in sales_item:
             sub_total += item["unit_price"] * item["quantity"]
             discount += item["discount"]
             tax += item["tax"]
+
+            product_details.append({
+                "identity": str(item['batch']),
+                "name": item['medicine'].name,
+                "total_price": int(item["unit_price"] * item["quantity"])*100,
+                "quantity": item['quantity'],
+                "unit_price": int(item['unit_price'])*100,
+            })
+            
         total = sub_total - discount + tax
         validated_data["discount"] = discount
         validated_data["sub_total"] = sub_total
         validated_data["tax"] = tax
         validated_data["total"] = total
+
+        breakdown = [
+            {"label": "Sub total", "amount": int(sub_total*100)},
+            {"label": "Discount", "amount": -int(discount*100)},
+            {"label": "Tax", "amount": int(tax*100)},
+        ]
+
         sale = Sales.objects.create(**validated_data)
 
         for item in sales_item:
-            total =  (item["unit_price"] * item["quantity"]) - item["discount"] + item["tax"]
-            item["total"] = total
+            _item_total =  (item["unit_price"] * item["quantity"]) - item["discount"] + item["tax"]
+            item["total"] = _item_total
 
-            item["sale"] = sale
-            sale_item = SalesItem.objects.create(**item)
+            if validated_data['payment_method'] == PaymentMethod.KHALTI:
+                create_khalti_url(
+                    amount =int(total*100),
+                    purchase_order_id = sale.id,
+                    purchase_order_name = "purchase 1",
+                    customer_name = sale.customer.full_name,
+                    customer_email = sale.customer.email,
+                    customer_phone = sale.customer.phone,
+                    amount_breakdown = breakdown,
+                    product_details = product_details
+                )
+            
+            sale_item = SalesItem.objects.create(sale=sale, **item)
 
             create_inventory_txn(
                 batch_number = item['batch'],
@@ -96,3 +125,5 @@ class SalesSerializer(serializers.ModelSerializer):
         sales_item = SalesItem.objects.filter(sale = instance)
         data['sales_item'] = SalesItemSerializer(sales_item, many=True).data
         return data     #return [] - empty
+    
+    
