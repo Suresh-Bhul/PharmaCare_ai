@@ -103,7 +103,7 @@ class SalesSerializer(serializers.ModelSerializer):
                     amount_breakdown = breakdown,
                     product_details = product_details
                 )
-            
+                          
             sale_item = SalesItem.objects.create(sale=sale, **item)
 
             create_inventory_txn(

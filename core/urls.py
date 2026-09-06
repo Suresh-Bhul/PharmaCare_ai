@@ -23,6 +23,8 @@ from rest_framework_simplejwt.views import (
 )
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
+from apps.payment.views import payment_callback
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -35,7 +37,8 @@ urlpatterns = [
     # path('api/inventory/', include('apps.inventory.api.urls')),
     path('api/sales/', include('apps.sales.api.urls')),
 
-
+    #Payment
+    path('callback/', payment_callback, name="callback"),
 
 
     #Apps/CRUD Oerations

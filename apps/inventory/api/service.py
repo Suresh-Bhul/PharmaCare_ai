@@ -1,4 +1,5 @@
 from apps.inventory.models import InventoryTxn
+from apps.payment.models import PaymentLog, PaymentStatus
 
 
 def create_inventory_txn(**kwargs):
@@ -19,4 +20,12 @@ def create_inventory_txn(**kwargs):
     )
     return inv
 
+# def create_payment_log(**kwargs):
+#     pidx = kwargs.get('pidx')
+#     sale = kwargs.get('sale')
 
+#     PaymentLog.objects.create(
+#         pidx = pidx,
+#         sale = sale,
+#         status = PaymentStatus.INITIATED
+#     )

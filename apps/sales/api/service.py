@@ -19,7 +19,7 @@ def create_khalti_url(**kwargs):
 
     payload = json.dumps(
         {
-            "return_url": "https://github.com/suresh-bhul/",   #After Payment return
+            "return_url": "http://localhost:8000/callback/",   #After Payment then return
             "website_url": "https://example.com/",
             "amount": amount,
             "purchase_order_id": purchase_order_id,
