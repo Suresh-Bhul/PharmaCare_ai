@@ -16,9 +16,11 @@ class SalesView(GenericAPIView):
     def post(self,request, *args, **kwargs):
         serializer = self.get_serializer(data= request.data)
         if serializer.is_valid():
-            serializer.save()
+            resp = serializer.save()
+            response = resp[0] if resp[1]=="khalti" else f'Sales paid from {resp[1] }'
             return Response({
-                "message":"Sales created Successfully"
+                "message":"Sales created Successfully",
+                "data": response
             })
         else:
             return Response(serializer.errors)

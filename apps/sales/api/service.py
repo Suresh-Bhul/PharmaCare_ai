@@ -40,4 +40,5 @@ def create_khalti_url(**kwargs):
 
     response = requests.post(url, headers=headers, data=payload)
 
-    print(response.text)
+    print(response.json())
+    return response.json()

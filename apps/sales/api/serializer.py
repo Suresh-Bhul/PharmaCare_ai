@@ -81,9 +81,9 @@ class SalesSerializer(serializers.ModelSerializer):
         validated_data["total"] = total
 
         breakdown = [
-            {"label": "Sub total", "amount": int(sub_total*100)},
-            {"label": "Discount", "amount": -int(discount*100)},
-            {"label": "Tax", "amount": int(tax*100)},
+            {"label": "Sub total", "amount": int(sub_total)*100},
+            {"label": "Discount", "amount": -int(discount)*100},
+            {"label": "Tax", "amount": int(tax)*100},
         ]
 
         sale = Sales.objects.create(**validated_data)
@@ -92,8 +92,8 @@ class SalesSerializer(serializers.ModelSerializer):
             _item_total =  (item["unit_price"] * item["quantity"]) - item["discount"] + item["tax"]
             item["total"] = _item_total
 
-            if validated_data['payment_method'] == PaymentMethod.KHALTI:
-                create_khalti_url(
+            if validated_data['payment_method'] == PaymentMethod.KHALTI:               
+                resp = create_khalti_url(
                     amount =int(total*100),
                     purchase_order_id = sale.id,
                     purchase_order_name = "purchase 1",
@@ -101,8 +101,9 @@ class SalesSerializer(serializers.ModelSerializer):
                     customer_email = sale.customer.email,
                     customer_phone = sale.customer.phone,
                     amount_breakdown = breakdown,
-                    product_details = product_details
+                    product_details = product_details,
                 )
+                return resp,validated_data['payment_method']
                           
             sale_item = SalesItem.objects.create(sale=sale, **item)
 
@@ -118,7 +119,7 @@ class SalesSerializer(serializers.ModelSerializer):
             item['batch'].quantity -= item['quantity']
             item['batch'].save()
 
-        return Sales
+        return sale, validated_data['payment_method']
     
     def to_representation(self, instance):      #to_representation -> How to display data 
         data = super().to_representation(instance)  
