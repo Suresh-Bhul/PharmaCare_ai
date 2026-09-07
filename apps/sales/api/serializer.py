@@ -1,12 +1,13 @@
 from rest_framework import serializers
 from apps.medicine.models import MedicineBatch
+from apps.payment.models import PaymentStatus
 from apps.sales.models import Sales, SalesItem, PaymentMethod
 from apps.sales.api.service import create_khalti_url
 
 from datetime import date, datetime
 from rest_framework.validators import ValidationError
 from django.db import transaction
-from apps.inventory.api.service import create_inventory_txn
+from apps.inventory.api.service import create_inventory_txn, create_payment_log
 from apps.inventory.models import TransactionType
 
 
@@ -103,22 +104,32 @@ class SalesSerializer(serializers.ModelSerializer):
                     amount_breakdown = breakdown,
                     product_details = product_details,
                 )
-                return resp,validated_data['payment_method']
+                create_payment_log(
+                    pidx = resp['pidx'],
+                    sale = sale,
+                    amount = sale.total,
+                )
+            else:
+                sale.payment_status = PaymentStatus.PAID
+                sale.save()
                           
-            sale_item = SalesItem.objects.create(sale=sale, **item)
+            sale_item = SalesItem.objects.create(sale=sale, **item)           
 
+        if validated_data["payment_method"]  == PaymentMethod.KHALTI:
+            return resp, validated_data['payment_method']
+        else:  
             create_inventory_txn(
-                batch_number = item['batch'],
-                transaction_type = TransactionType.SALE,
-                quantity = item['quantity'],
-                reference_id = sale_item.id,
-                previous_stock = item['batch'].quantity,
-                new_stock = item['batch'].quantity - item['quantity']
-            )
+            batch_number = item['batch'],
+            transaction_type = TransactionType.SALE,
+            quantity = item['quantity'],
+            reference_id = sale_item.id,
+            previous_stock = item['batch'].quantity,
+            new_stock = item['batch'].quantity - item['quantity'],
+        )
+        item['batch'].quantity -= item['quantity']
+        item['batch'].save()   
 
-            item['batch'].quantity -= item['quantity']
-            item['batch'].save()
-
+         
         return sale, validated_data['payment_method']
     
     def to_representation(self, instance):      #to_representation -> How to display data 

@@ -8,6 +8,7 @@ class PaymentStatus(models.TextChoices):
     PAID = "paid", "Paid"
     UNPAID = "unpaid", "Unpaid"
     CANCELLED = "cancelled", "Cancelled"
+    FAILED = "failed", "Failed"
 
 
 class PaymentMethod(models.TextChoices):

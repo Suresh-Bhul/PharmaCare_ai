@@ -20,12 +20,14 @@ def create_inventory_txn(**kwargs):
     )
     return inv
 
-# def create_payment_log(**kwargs):
-#     pidx = kwargs.get('pidx')
-#     sale = kwargs.get('sale')
+def create_payment_log(**kwargs):
+    pidx = kwargs.get('pidx')
+    sale = kwargs.get('sale')
+    amount = kwargs.get('amount')
 
-#     PaymentLog.objects.create(
-#         pidx = pidx,
-#         sale = sale,
-#         status = PaymentStatus.INITIATED
-#     )
+    PaymentLog.objects.create(
+        pidx = pidx,
+        sale = sale,
+        status = PaymentStatus.INITIATED,
+        amount = amount,
+    )

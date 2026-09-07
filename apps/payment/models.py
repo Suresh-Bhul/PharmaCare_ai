@@ -10,6 +10,7 @@ class PaymentStatus(models.TextChoices):
     FAILED = "failed", "Failed"
     EXPIRED = "expired", "Expired"
     REFUNDED = "refunded", "Refunded"
+    PAID = "paid", "Paid"
 
 class PaymentLog(models.Model):
     sale = models.ForeignKey(Sales, on_delete=models.SET_NULL, null=True)
