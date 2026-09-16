@@ -25,15 +25,17 @@ class PurchaseView(GenericAPIView):
     def post(self, request):
         data = request.data
         serializer = self.get_serializer(data=data)  
+
         if serializer.is_valid():
             serializer.save()
+            
             return Response({
                 "message":"Purchase created successfully"
             })
         else:
             return Response(serializer.errors)
 
-
+"""
     #Update-Purchase
     def put(self, request, *args, **kwargs):
         id = request.GET.get('id')
@@ -64,8 +66,7 @@ class PurchaseView(GenericAPIView):
         return Response({
                 "message": "Purchase deleted successfully"
             },status.HTTP_204_NO_CONTENT)
-
-
+"""
 
 class UpdatePurchaseView(GenericAPIView):
     queryset = Purchase
@@ -114,7 +115,7 @@ def verify_purchase(request, id):
                 medicine = item.medicine,
                 batch_number = item.batch_number,
                 manufacturing_date = item.manufacturing_date,
-                quantity = item. quantity,
+                quantity = item.quantity,
                 supplier = purchase.supplier,
                 expiry_date = item.expiry_date,
                 purchase_price = item.unit_price,

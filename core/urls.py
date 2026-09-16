@@ -31,10 +31,10 @@ urlpatterns = [
     #Apps/APIs
     path('api/supplier/', include('apps.supplier.api.urls')),
     path('api/medicine/', include('apps.medicine.api.urls')),
-    # path('api/customer/', include('apps.customer.api.urls')),
+    path('api/customer/', include('apps.customer.api.urls')),
     path('api/pharmacy/', include('apps.pharmacy.api.urls')),
     path('api/purchase/', include('apps.purchase.api.urls')),
-    # path('api/inventory/', include('apps.inventory.api.urls')),
+    path('api/inventory/', include('apps.inventory.api.urls')),
     path('api/sales/', include('apps.sales.api.urls')),
 
     #Payment
