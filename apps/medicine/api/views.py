@@ -33,39 +33,6 @@ class MedicineView(GenericAPIView):
             return Response(serializer.errors)
 
 
-    #Update-medicine
-    def put(self, request, *args, **kwargs):
-        id = request.GET.get('id')
-        if not id:
-            return Response({
-                "message":"Please provide id in request parameter"
-            },status.HTTP_400_BAD_REQUEST)
-        data = get_object_or_404(Medicine, id=id)
-        serializer = MedicineSerializer(data, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({
-                "message":"Medicine update successfully"
-            })
-        else:
-            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-
-    
-    #Delete-medicine
-    def delete(self, request, *args, **kwargs):
-        id = request.GET.get('id')
-        if not id:
-            return Response({
-                "message":"Please provide id in request parameter"
-            },status.HTTP_400_BAD_REQUEST)
-        data = get_object_or_404(Medicine, id=id)
-        data.delete()
-        return Response({
-                "message": "Medicine deleted successfully"
-            },status.HTTP_204_NO_CONTENT)
-
-
-
 class UpdateMedicineView(GenericAPIView):
     queryset = Medicine
     serializer_class = MedicineSerializer
@@ -75,7 +42,6 @@ class UpdateMedicineView(GenericAPIView):
         data = get_object_or_404(Medicine, id=id)
         serializer = self.get_serializer(data)
         return Response(serializer.data)
-
 
     #Update
     def put(self, request, id):
@@ -88,7 +54,6 @@ class UpdateMedicineView(GenericAPIView):
             })
         else:
             return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
-
                     
     #Delete-medicine
     def delete(self, request, id):  
@@ -104,7 +69,50 @@ class CategoryView(GenericAPIView):
     queryset = Category 
     serializer_class = CategorySerializer
 
+    #List
     def get(self, request, *args, **kwargs):
             data = Category.objects.all()
             serializer = CategorySerializer(data, many=True)
             return Response(serializer.data)
+
+    #Create-category    
+    def post(self, request):
+        data = request.data
+        serializer = self.get_serializer(data=data)  #CategorySerializer = self.get_serializer
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message":"Category created successfully"
+            })
+        else:
+            return Response(serializer.errors)
+
+class UpdateCategoryView(GenericAPIView):
+    queryset = Category 
+    serializer_class = CategorySerializer
+
+    #List
+    def get(self, request, *args, **kwargs):
+            data = Category.objects.all()
+            serializer = CategorySerializer(data, many=True)
+            return Response(serializer.data)
+    
+    #Update
+    def put(self, request, id):
+        data = get_object_or_404(Category, id =id)
+        serializer = self.get_serializer(data, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                "message":"Category update successfully"
+            })
+        else:
+            return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+                    
+    #Delete
+    def delete(self, request, id):  
+        data = get_object_or_404(Category, id=id)
+        data.delete()
+        return Response({
+        "message": "Category deleted successfully"
+        },status.HTTP_204_NO_CONTENT)

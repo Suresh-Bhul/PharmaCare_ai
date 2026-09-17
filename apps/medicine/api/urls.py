@@ -1,10 +1,12 @@
 from django.urls import path
-from apps.medicine.api.views import MedicineView, UpdateMedicineView, CategoryView
+from apps.medicine.api.views import MedicineView, UpdateCategoryView, UpdateMedicineView, CategoryView
 
 urlpatterns = [
     path('medicine-list/', MedicineView.as_view(), name="medicine-list"),
     path('medicine-update/<int:id>', UpdateMedicineView.as_view(), name="medicine-update"),
     path('category-list/', CategoryView.as_view(), name="category-list"),
+    path('category-update/<int:id>', UpdateCategoryView.as_view(), name="category-update"),
+
 
 
 ]
