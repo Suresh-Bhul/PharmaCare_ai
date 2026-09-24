@@ -55,7 +55,9 @@ urlpatterns = [
     path('api/swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
     path('api/redocs/', SpectacularRedocView.as_view(url_name='schema'), name='redocs'),
 
-    
+
+    # Django-template frontend (session auth, server rendered pages)
+    path('patients/', include('apps.customer.urls')),
 ]
 
 
