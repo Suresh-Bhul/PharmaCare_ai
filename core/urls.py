@@ -41,10 +41,6 @@ urlpatterns = [
     path('callback/', payment_callback, name="callback"),
 
 
-    #Apps/CRUD Oerations
-    path('apps/medicine/', include('apps.medicine.urls')),
-    
-
     #Simplejwt
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
@@ -57,6 +53,8 @@ urlpatterns = [
 
 
     # Django-template frontend (session auth, server rendered pages)
+     #Apps/CRUD Operations
+    path('suppliers/', include('apps.supplier.urls')),
     path('patients/', include('apps.customer.urls')),
 ]
 
