@@ -56,6 +56,9 @@ urlpatterns = [
      #Apps/CRUD Operations
     path('suppliers/', include('apps.supplier.urls')),
     path('patients/', include('apps.customer.urls')),
+    path('medicines/', include('apps.medicine.urls')),
+
+
 ]
 
 
