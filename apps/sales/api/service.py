@@ -1,7 +1,14 @@
+import os
 import requests
 import json
 
 def create_khalti_url(**kwargs):
+    khalti_api_key = os.getenv("KHALTI_API_KEY")
+    if not khalti_api_key:
+        raise RuntimeError(
+            "KHALTI_API_KEY is not set. Add it to your .env file."
+        )
+
     amount = kwargs.get("amount")
     purchase_order_id = kwargs.get("purchase_order_id")
     purchase_order_name = kwargs.get("purchase_order_name")
@@ -19,7 +26,7 @@ def create_khalti_url(**kwargs):
 
     payload = json.dumps(
         {
-            "return_url": "http://localhost:8000/callback/",   #After Payment then return
+            "return_url": os.getenv("KHALTI_RETURN_URL", "http://localhost:8000/callback/"),   #After Payment then return
             "website_url": "https://example.com/",
             "amount": amount,
             "purchase_order_id": purchase_order_id,
@@ -34,7 +41,7 @@ def create_khalti_url(**kwargs):
         }
     )
     headers = {
-        'Authorization': 'key ea674cb4220148678bea350de88201b9',
+        'Authorization': f'key {khalti_api_key}',
         'Content-Type': 'application/json',
     }
 
