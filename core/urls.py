@@ -54,11 +54,13 @@ urlpatterns = [
 
     # Django-template frontend (session auth, server rendered pages)
      #Apps/CRUD Operations
+    
+    path('patients/', include('apps.customer.urls')),
+    path('medicines/', include('apps.medicine.urls')),
+    path('inventory/', include('apps.inventory.urls')),
     path('suppliers/', include('apps.supplier.urls')),
     path('purchases/', include('apps.purchase.urls')),
 
-    path('patients/', include('apps.customer.urls')),
-    path('medicines/', include('apps.medicine.urls')),
 
 
 ]
