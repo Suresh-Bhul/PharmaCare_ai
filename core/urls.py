@@ -62,6 +62,7 @@ urlpatterns = [
     path('purchases/', include('apps.purchase.urls')),
     path('sales/', include('apps.sales.urls')),
     path('pharmacy-settings/', include('apps.pharmacy.urls')),
+    path('reports/', include('apps.report.urls')),
 
 
 
