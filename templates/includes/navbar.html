@@ -1,0 +1,67 @@
+<header class="topbar">
+    <button class="btn btn-icon d-lg-none" id="sidebarToggle" type="button">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="topbar-title">
+        {% block page_title %}<h1>Dashboard</h1>{% endblock %}
+    </div>
+
+    <div class="topbar-actions">
+        <a href="{% url 'pos' %}" class="btn btn-primary btn-sm d-none d-md-inline-flex">
+            <i class="bi bi-plus-lg"></i> New Sale
+        </a>
+
+        <div class="dropdown">
+            <button class="btn btn-icon position-relative" data-bs-toggle="dropdown">
+                <i class="bi bi-bell"></i>
+                {% if alert_total_count %}
+                    <span class="badge-dot">{{ alert_total_count }}</span>
+                {% endif %}
+            </button>
+            <div class="dropdown-menu dropdown-menu-end alert-menu">
+                <h6 class="dropdown-header">Alerts</h6>
+                {% if alert_low_stock_count %}
+                <a class="dropdown-item" href="{% url 'medicine_list' %}?stock=low">
+                    <i class="bi bi-exclamation-triangle text-warning"></i>
+                    {{ alert_low_stock_count }} medicine(s) low on stock
+                </a>
+                {% endif %}
+                {% if alert_expiring_soon_count %}
+                <a class="dropdown-item" href="{% url 'batch_list' %}?expiry=soon">
+                    <i class="bi bi-hourglass-split text-warning"></i>
+                    {{ alert_expiring_soon_count }} batch(es) expiring within 30 days
+                </a>
+                {% endif %}
+                {% if alert_expired_count %}
+                <a class="dropdown-item" href="{% url 'batch_list' %}?expiry=expired">
+                    <i class="bi bi-x-octagon text-danger"></i>
+                    {{ alert_expired_count }} batch(es) expired
+                </a>
+                {% endif %}
+                {% if not alert_total_count %}
+                <span class="dropdown-item-text text-muted">You're all caught up.</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-icon-text" data-bs-toggle="dropdown">
+                <span class="avatar">{{ user.username|slice:":1"|upper }}</span>
+                <span class="d-none d-md-inline">{{ user.get_full_name|default:user.username }}</span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-end">
+                <a class="dropdown-item" href="{% url 'profile' %}"><i class="bi bi-person"></i> Profile</a>
+                <a class="dropdown-item" href="{% url 'account_settings' %}"><i class="bi bi-gear"></i> Settings</a>
+                {% if user.is_superuser %}
+                <a class="dropdown-item" href="{% url 'pharmacy_settings' %}"><i class="bi bi-shop-window"></i> Pharmacy Profile</a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right"></i> Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</header>

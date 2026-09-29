@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found{% endblock %}
+{% block content %}
+<div class="empty-state">
+    <i class="bi bi-signpost-split"></i>
+    <h3>404 - Page Not Found</h3>
+    <p>The page you're looking for doesn't exist or has been moved.</p>
+    <a href="{% url 'dashboard' %}" class="btn btn-primary">Back to Dashboard</a>
+</div>
+{% endblock %}
+{% block auth_content %}
+<div class="auth-wrapper"><div class="auth-card text-center">
+    <i class="bi bi-signpost-split" style="font-size:2.2rem;color:var(--brand);"></i>
+    <h3 class="mt-2">404 - Page Not Found</h3>
+    <p class="text-muted">The page you're looking for doesn't exist.</p>
+    <a href="{% url 'login' %}" class="btn btn-primary">Back to Login</a>
+</div></div>
+{% endblock %}

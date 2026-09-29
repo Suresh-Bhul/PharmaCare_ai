@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Edit Medicine{% endblock %}
+{% block page_title %}<h1>Edit Medicine</h1>{% endblock %}
+{% block content %}
+{% include "includes/page_header.html" with title="Edit Medicine" subtitle=form.instance.name %}
+<div class="form-card">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% include "medicine/_form_fields.html" %}
+    </form>
+</div>
+{% endblock %}

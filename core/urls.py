@@ -14,6 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
@@ -24,6 +26,7 @@ from rest_framework_simplejwt.views import (
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 from apps.payment.views import payment_callback
+from core.views import dashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -54,6 +57,7 @@ urlpatterns = [
 
     # Django-template frontend (session auth, server rendered pages)
      #Apps/CRUD Operations
+    path('', dashboard, name='dashboard'),
     path('accounts/', include('apps.user.urls')),
     path('patients/', include('apps.customer.urls')),
     path('medicines/', include('apps.medicine.urls')),
@@ -64,9 +68,15 @@ urlpatterns = [
     path('pharmacy-settings/', include('apps.pharmacy.urls')),
     path('reports/', include('apps.report.urls')),
 
-
-
-
 ]
+
+handler404 = 'core.views.custom_404'
+handler500 = 'core.views.custom_500'
+handler403 = 'core.views.custom_403'
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 

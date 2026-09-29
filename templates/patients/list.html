@@ -1,1 +1,37 @@
-heloo
+{% extends "base.html" %}
+{% block title %}Patients{% endblock %}
+{% block page_title %}<h1>Patients</h1>{% endblock %}
+{% block content %}
+{% include "includes/page_header.html" with title="Patients" subtitle="Customers registered at your pharmacy" action_url="patient_create" action_label="Add Patient" %}
+<div class="table-card">
+    <div class="table-toolbar">
+        <form class="d-flex" method="get">
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control form-control-sm" placeholder="Search name, phone, email..." style="width:260px;">
+        </form>
+        <span class="text-muted small">{{ page_obj.paginator.count|default:patients|length }} patient(s)</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Gender</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+            {% for p in patients %}
+                <tr>
+                    <td><a href="{% url 'patient_detail' p.pk %}" class="fw-semibold">{{ p.full_name }}</a></td>
+                    <td>{{ p.phone }}</td>
+                    <td>{{ p.email }}</td>
+                    <td class="text-capitalize">{{ p.get_gender_display }}</td>
+                    <td>{% if p.status == "active" %}<span class="status-pill success">Active</span>{% else %}<span class="status-pill muted">Inactive</span>{% endif %}</td>
+                    <td class="text-end">
+                        <a href="{% url 'patient_update' p.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'patient_delete' p.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6"><div class="empty-state"><i class="bi bi-people"></i>No patients yet. <a href="{% url 'patient_create' %}">Add your first patient</a>.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

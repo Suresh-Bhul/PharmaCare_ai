@@ -1,1 +1,51 @@
-Here is the purchases list
+{% extends "base.html" %}
+{% block title %}Purchases{% endblock %}
+{% block page_title %}<h1>Purchases</h1>{% endblock %}
+{% block content %}
+{% include "includes/page_header.html" with title="Purchases" subtitle="Purchase orders placed with suppliers" action_url="purchase_create" action_label="New Purchase" %}
+<div class="table-card">
+    <div class="table-toolbar">
+        <form class="d-flex flex-wrap gap-2" method="get">
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control form-control-sm" placeholder="Search PO # or supplier..." style="width:230px;">
+            <select name="status" class="form-select form-select-sm" style="width:150px;">
+                <option value="">All Status</option>
+                <option value="pending" {% if request.GET.status == "pending" %}selected{% endif %}>Pending</option>
+                <option value="unpaid" {% if request.GET.status == "unpaid" %}selected{% endif %}>Unpaid</option>
+                <option value="paid" {% if request.GET.status == "paid" %}selected{% endif %}>Paid</option>
+            </select>
+            <button class="btn btn-sm btn-outline-secondary" type="submit">Filter</button>
+        </form>
+        <span class="text-muted small">{{ page_obj.paginator.count|default:purchases|length }} purchase(s)</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>PO #</th><th>Supplier</th><th>Date</th><th>Total</th><th>Payment</th><th>Verified</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+            {% for p in purchases %}
+                <tr>
+                    <td><a href="{% url 'purchase_detail' p.pk %}" class="fw-semibold">{{ p.purchase_number }}</a></td>
+                    <td>{{ p.supplier.company_name }}</td>
+                    <td>{{ p.purchase_date }}</td>
+                    <td>Rs. {{ p.total }}</td>
+                    <td>
+                        {% if p.payment_status == "paid" %}<span class="status-pill success">Paid</span>
+                        {% elif p.payment_status == "pending" %}<span class="status-pill warning">Pending</span>
+                        {% else %}<span class="status-pill danger">Unpaid</span>{% endif %}
+                    </td>
+                    <td>{% if p.is_purchase_verified %}<span class="status-pill success">Verified</span>{% else %}<span class="status-pill muted">Not Verified</span>{% endif %}</td>
+                    <td class="text-end">
+                        <a href="{% url 'purchase_detail' p.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-eye"></i></a>
+                        {% if not p.is_purchase_verified %}
+                        <a href="{% url 'purchase_delete' p.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7"><div class="empty-state"><i class="bi bi-cart-check"></i>No purchases yet. <a href="{% url 'purchase_create' %}">Create your first purchase order</a>.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

@@ -1,1 +1,93 @@
-This is the purchase form
+{% extends "base.html" %}
+{% block title %}New Purchase{% endblock %}
+{% block page_title %}<h1>New Purchase Order</h1>{% endblock %}
+{% block content %}
+{% include "includes/page_header.html" with title="New Purchase Order" subtitle="Record medicines received from a supplier" %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-card mb-4">
+        <h5 class="mb-3">Purchase Details</h5>
+        {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+        <div class="row g-3">
+            {% for field in form %}
+            <div class="col-md-4">
+                <label class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+                {{ field }}
+                {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="form-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Line Items</h5>
+            <button type="button" class="btn btn-sm btn-outline-primary" id="addItemRow"><i class="bi bi-plus-lg"></i> Add Item</button>
+        </div>
+
+        {{ formset.management_form }}
+        {% if formset.non_form_errors %}<div class="alert alert-danger">{{ formset.non_form_errors }}</div>{% endif %}
+
+        <div class="table-responsive">
+            <table class="table" id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>Medicine</th><th>Batch #</th><th>Mfg. Date</th><th>Expiry Date</th>
+                        <th>Qty</th><th>Unit Price</th><th>Discount</th><th>Tax</th><th></th>
+                    </tr>
+                </thead>
+                <tbody id="itemFormRows">
+                {% for item_form in formset %}
+                    <tr class="item-row">
+                        {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
+                        <td style="min-width:170px;">{{ item_form.medicine }}</td>
+                        <td style="min-width:110px;">{{ item_form.batch_number }}</td>
+                        <td style="min-width:150px;">{{ item_form.manufacturing_date }}</td>
+                        <td style="min-width:150px;">{{ item_form.expiry_date }}</td>
+                        <td style="min-width:80px;">{{ item_form.quantity }}</td>
+                        <td style="min-width:100px;">{{ item_form.unit_price }}</td>
+                        <td style="min-width:100px;">{{ item_form.discount }}</td>
+                        <td style="min-width:100px;">{{ item_form.tax }}</td>
+                        <td>{% if item_form.DELETE %}<div class="form-check">{{ item_form.DELETE }}<label class="form-check-label small">Remove</label></div>{% endif %}</td>
+                    </tr>
+                    {% if item_form.errors %}
+                    <tr><td colspan="9"><ul class="errorlist">{% for field, errs in item_form.errors.items %}{% for e in errs %}<li>{{ field }}: {{ e }}</li>{% endfor %}{% endfor %}</ul></td></tr>
+                    {% endif %}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <p class="helptext">Totals are calculated automatically from line items when you save.</p>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save Purchase Order</button>
+        <a href="{% url 'purchase_list' %}" class="btn btn-outline-secondary">Cancel</a>
+    </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Clones the last item row so users can add more line items without a page reload.
+// New rows reuse Django's formset "extra form" naming convention by bumping TOTAL_FORMS.
+document.getElementById('addItemRow').addEventListener('click', function () {
+    var totalForms = document.getElementById('id_items-TOTAL_FORMS');
+    var rows = document.querySelectorAll('#itemFormRows .item-row');
+    var lastRow = rows[rows.length - 1];
+    var newIndex = parseInt(totalForms.value, 10);
+
+    var newRow = lastRow.cloneNode(true);
+    newRow.querySelectorAll('input, select').forEach(function (el) {
+        if (el.name) {
+            el.name = el.name.replace(/-(\d+)-/, '-' + newIndex + '-');
+            el.id = 'id_' + el.name;
+            if (el.type === 'checkbox') { el.checked = false; } else { el.value = ''; }
+        }
+    });
+    document.getElementById('itemFormRows').appendChild(newRow);
+    totalForms.value = newIndex + 1;
+});
+</script>
+{% endblock %}

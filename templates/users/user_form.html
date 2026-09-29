@@ -1,1 +1,57 @@
-User form
+{% extends "base.html" %}
+{% block title %}{% if object %}Edit User{% else %}Add User{% endif %}{% endblock %}
+{% block page_title %}<h1>{% if object %}Edit User{% else %}Add User{% endif %}</h1>{% endblock %}
+{% block content %}
+{% include "includes/page_header.html" with title=object|yesno:"Edit User,Add User" subtitle="Set access level and login credentials" %}
+<div class="form-card" style="max-width:640px;">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}<ul class="errorlist">{% for e in form.username.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">First Name</label>
+                {{ form.first_name }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Last Name</label>
+                {{ form.last_name }}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Role</label>
+                {{ form.role }}
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+                <div class="form-check">
+                    {{ form.is_active }}
+                    <label class="form-check-label" for="{{ form.is_active.id_for_label }}">Active account</label>
+                </div>
+            </div>
+            {% if form.password1 %}
+            <div class="col-md-6">
+                <label class="form-label">Password</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}<ul class="errorlist">{% for e in form.password1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Confirm Password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}<ul class="errorlist">{% for e in form.password2.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            </div>
+            {% endif %}
+        </div>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">Save User</button>
+            <a href="{% url 'user_list' %}" class="btn btn-outline-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

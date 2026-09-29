@@ -1,1 +1,54 @@
-Here is all listed batches  
+{% extends "base.html" %}
+{% block title %}Inventory{% endblock %}
+{% block page_title %}<h1>Inventory</h1>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h2>Inventory</h2><p class="text-muted mb-0">Stock levels across all medicine batches</p></div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'inventory_txn_list' %}" class="btn btn-outline-secondary"><i class="bi bi-clock-history"></i> Transaction Log</a>
+        <a href="{% url 'stock_adjustment_list' %}" class="btn btn-primary"><i class="bi bi-sliders"></i> Adjust Stock</a>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <form class="d-flex flex-wrap gap-2" method="get">
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control form-control-sm" placeholder="Search medicine or batch..." style="width:230px;">
+            <select name="expiry" class="form-select form-select-sm" style="width:180px;">
+                <option value="">All Batches</option>
+                <option value="soon" {% if request.GET.expiry == "soon" %}selected{% endif %}>Expiring within 30 days</option>
+                <option value="expired" {% if request.GET.expiry == "expired" %}selected{% endif %}>Expired</option>
+            </select>
+            <button class="btn btn-sm btn-outline-secondary" type="submit">Filter</button>
+        </form>
+        <span class="text-muted small">{{ page_obj.paginator.count|default:batches|length }} batch(es)</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Medicine</th><th>Batch #</th><th>Supplier</th><th>Qty</th><th>Purchase Price</th><th>Selling Price</th><th>Expiry Date</th><th>Status</th></tr></thead>
+            <tbody>
+            {% for b in batches %}
+                <tr>
+                    <td class="fw-semibold">{{ b.medicine.name }}</td>
+                    <td>{{ b.batch_number }}</td>
+                    <td>{{ b.supplier.company_name }}</td>
+                    <td>{{ b.quantity }}</td>
+                    <td>Rs. {{ b.purchase_price }}</td>
+                    <td>Rs. {{ b.selling_price }}</td>
+                    <td>{{ b.expiry_date }}</td>
+                    <td>
+                        {% if b.expiry_date < today %}<span class="status-pill danger">Expired</span>
+                        {% elif b.expiry_date <= soon_cutoff %}<span class="status-pill warning">Expiring Soon</span>
+                        {% elif b.quantity == 0 %}<span class="status-pill muted">Out of Stock</span>
+                        {% else %}<span class="status-pill success">Good</span>{% endif %}
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="8"><div class="empty-state"><i class="bi bi-boxes"></i>No stock batches recorded yet. Batches are created automatically when a purchase is verified.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

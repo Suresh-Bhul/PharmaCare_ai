@@ -1,1 +1,42 @@
-All registered users
+{% extends "base.html" %}
+{% block title %}Users & Roles{% endblock %}
+{% block page_title %}<h1>Users &amp; Roles</h1>{% endblock %}
+{% block content %}
+{% include "includes/page_header.html" with title="Users & Roles" subtitle="Manage staff accounts and access levels" action_url="user_create" action_label="Add User" %}
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <form class="d-flex" method="get">
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control form-control-sm" placeholder="Search username..." style="width:220px;">
+        </form>
+        <span class="text-muted small">{{ page_obj.paginator.count|default:users.count }} user(s)</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table" id="usersTable">
+            <thead><tr><th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+            {% for u in users %}
+                <tr>
+                    <td class="fw-semibold">{{ u.username }}</td>
+                    <td>{{ u.get_full_name|default:"—" }}</td>
+                    <td>{{ u.email|default:"—" }}</td>
+                    <td>
+                        {% if u.is_superuser %}<span class="status-pill info">Administrator</span>
+                        {% else %}<span class="status-pill muted">Pharmacy Staff</span>{% endif %}
+                    </td>
+                    <td>{% if u.is_active %}<span class="status-pill success">Active</span>{% else %}<span class="status-pill danger">Inactive</span>{% endif %}</td>
+                    <td>{{ u.date_joined|date:"M d, Y" }}</td>
+                    <td class="text-end">
+                        <a href="{% url 'user_update' u.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'user_delete' u.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7"><div class="empty-state"><i class="bi bi-people"></i>No users found.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

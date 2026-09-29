@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}<h1>Dashboard</h1>{% endblock %}
+{% block content %}
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-cash-coin"></i></div>
+            <div>
+                <div class="stat-value">Rs. {{ todays_sales_total|floatformat:2 }}</div>
+                <div class="stat-label">Today's Sales ({{ todays_sales_count }} orders)</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon bg-blue"><i class="bi bi-graph-up-arrow"></i></div>
+            <div>
+                <div class="stat-value">Rs. {{ month_sales_total|floatformat:2 }}</div>
+                <div class="stat-label">This Month's Revenue</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon bg-purple"><i class="bi bi-capsule"></i></div>
+            <div>
+                <div class="stat-value">{{ total_medicines }}</div>
+                <div class="stat-label">Medicines in Catalog</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-card">
+            <div class="stat-icon bg-orange"><i class="bi bi-cart-check"></i></div>
+            <div>
+                <div class="stat-value">{{ pending_purchases }}</div>
+                <div class="stat-label">Purchases Pending Verification</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="table-card h-100">
+            <div class="table-toolbar">
+                <h5 class="mb-0"><i class="bi bi-exclamation-triangle text-warning"></i> Low Stock Medicines</h5>
+                <a href="{% url 'medicine_list' %}" class="btn btn-sm btn-outline-secondary">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Medicine</th><th>Stock</th><th>Reorder Level</th></tr></thead>
+                    <tbody>
+                    {% for m in low_stock_medicines %}
+                        <tr>
+                            <td>{{ m.name }}</td>
+                            <td><span class="status-pill danger">{{ m.total_stock|default:0 }}</span></td>
+                            <td>{{ m.reorder_level }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="3"><div class="empty-state py-3"><i class="bi bi-check-circle"></i>Stock levels look healthy.</div></td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="table-card h-100">
+            <div class="table-toolbar">
+                <h5 class="mb-0"><i class="bi bi-hourglass-split text-warning"></i> Expiring Soon (30 days)</h5>
+                <a href="{% url 'batch_list' %}" class="btn btn-sm btn-outline-secondary">View All</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Medicine</th><th>Batch</th><th>Expiry</th><th>Qty</th></tr></thead>
+                    <tbody>
+                    {% for b in expiring_batches %}
+                        <tr>
+                            <td>{{ b.medicine.name }}</td>
+                            <td>{{ b.batch_number }}</td>
+                            <td>{{ b.expiry_date }}</td>
+                            <td>{{ b.quantity }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="4"><div class="empty-state py-3"><i class="bi bi-check-circle"></i>No batches expiring soon.</div></td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-toolbar">
+        <h5 class="mb-0"><i class="bi bi-receipt"></i> Recent Sales</h5>
+        <a href="{% url 'sales_list' %}" class="btn btn-sm btn-outline-secondary">View All</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Invoice #</th><th>Customer</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody>
+            {% for s in recent_sales %}
+                <tr>
+                    <td><a href="{% url 'sale_invoice' s.pk %}">{{ s.invoice_number }}</a></td>
+                    <td>{{ s.customer.full_name }}</td>
+                    <td>Rs. {{ s.total }}</td>
+                    <td class="text-capitalize">{{ s.get_payment_method_display }}</td>
+                    <td>
+                        {% if s.payment_status == "paid" %}<span class="status-pill success">Paid</span>
+                        {% elif s.payment_status == "pending" %}<span class="status-pill warning">Pending</span>
+                        {% elif s.payment_status == "cancelled" or s.payment_status == "failed" %}<span class="status-pill danger">{{ s.get_payment_status_display }}</span>
+                        {% else %}<span class="status-pill muted">{{ s.get_payment_status_display }}</span>{% endif %}
+                    </td>
+                    <td>{{ s.created_at|date:"M d, Y H:i" }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6"><div class="empty-state py-3"><i class="bi bi-receipt"></i>No sales recorded yet.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

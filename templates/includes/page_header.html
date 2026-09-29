@@ -1,0 +1,14 @@
+{% comment %}
+Usage: {% include "includes/page_header.html" with title="Medicines" subtitle="Manage your medicine catalog" action_url="medicine_create" action_label="Add Medicine" %}
+{% endcomment %}
+<div class="page-header">
+    <div>
+        <h2>{{ title }}</h2>
+        {% if subtitle %}<p class="text-muted mb-0">{{ subtitle }}</p>{% endif %}
+    </div>
+    {% if action_url %}
+    <a href="{% url action_url %}" class="btn btn-primary">
+        <i class="bi bi-plus-lg"></i> {{ action_label|default:"Add New" }}
+    </a>
+    {% endif %}
+</div>

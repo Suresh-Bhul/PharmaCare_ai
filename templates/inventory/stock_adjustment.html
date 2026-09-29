@@ -1,1 +1,53 @@
-This is the stock adj
+{% extends "base.html" %}
+{% block title %}Stock Adjustments{% endblock %}
+{% block page_title %}<h1>Stock Adjustments</h1>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h2>Stock Adjustments</h2><p class="text-muted mb-0">Manually correct stock for damage, loss or count corrections</p></div>
+    <a href="{% url 'batch_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Inventory</a>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="form-card">
+            <h5 class="mb-3">New Adjustment</h5>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+                </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary w-100"><i class="bi bi-check-lg"></i> Record Adjustment</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-lg-7">
+        <div class="table-card">
+            <div class="table-toolbar"><h5 class="mb-0">Recent Adjustments</h5></div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Date</th><th>Medicine</th><th>Batch</th><th>Qty</th><th>New Stock</th><th>Note</th></tr></thead>
+                    <tbody>
+                    {% for a in recent_adjustments %}
+                        <tr>
+                            <td>{{ a.created_at|date:"M d, H:i" }}</td>
+                            <td>{{ a.batch.medicine.name }}</td>
+                            <td>{{ a.batch.batch_number }}</td>
+                            <td>{{ a.quantity }}</td>
+                            <td>{{ a.new_stock }}</td>
+                            <td>{{ a.reference_id|default:"—" }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6"><div class="empty-state py-3"><i class="bi bi-sliders"></i>No adjustments recorded yet.</div></td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,1 +1,38 @@
-This is the suppliers lists
+{% extends "base.html" %}
+{% block title %}Suppliers{% endblock %}
+{% block page_title %}<h1>Suppliers</h1>{% endblock %}
+{% block content %}
+{% include "includes/page_header.html" with title="Suppliers" subtitle="Manage medicine suppliers and vendors" action_url="supplier_create" action_label="Add Supplier" %}
+<div class="table-card">
+    <div class="table-toolbar">
+        <form class="d-flex" method="get">
+            <input type="text" name="q" value="{{ request.GET.q }}" class="form-control form-control-sm" placeholder="Search company, contact, email..." style="width:260px;">
+        </form>
+        <span class="text-muted small">{{ page_obj.paginator.count|default:suppliers|length }} supplier(s)</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Company</th><th>Contact Person</th><th>Phone</th><th>Email</th><th>Terms</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+            <tbody>
+            {% for s in suppliers %}
+                <tr>
+                    <td class="fw-semibold">{{ s.company_name }}</td>
+                    <td>{{ s.contact_person }}</td>
+                    <td>{{ s.phone }}</td>
+                    <td>{{ s.email|default:"—" }}</td>
+                    <td>{{ s.payment_terms|default:"—" }}</td>
+                    <td>{% if s.status %}<span class="status-pill success">Active</span>{% else %}<span class="status-pill muted">Inactive</span>{% endif %}</td>
+                    <td class="text-end">
+                        <a href="{% url 'supplier_update' s.pk %}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        <a href="{% url 'supplier_delete' s.pk %}" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="7"><div class="empty-state"><i class="bi bi-truck"></i>No suppliers yet. <a href="{% url 'supplier_create' %}">Add your first supplier</a>.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

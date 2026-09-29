@@ -1,0 +1,11 @@
+{% if messages %}
+<div class="messages-wrapper">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+        {% if message.tags == 'success' %}<i class="bi bi-check-circle"></i>{% elif message.tags == 'error' or message.tags == 'danger' %}<i class="bi bi-exclamation-circle"></i>{% else %}<i class="bi bi-info-circle"></i>{% endif %}
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}

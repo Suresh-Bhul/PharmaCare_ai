@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Payment Status{% endblock %}
+{% block content %}
+<div class="form-card text-center" style="max-width:480px;margin:2rem auto;">
+    {% if data.status == "Completed" %}
+        <i class="bi bi-check-circle text-success" style="font-size:2.5rem;"></i>
+        <h4 class="mt-2">Payment Successful</h4>
+        <p class="text-muted">Your Khalti payment has been confirmed.</p>
+    {% else %}
+        <i class="bi bi-x-circle text-danger" style="font-size:2.5rem;"></i>
+        <h4 class="mt-2">Payment Failed</h4>
+        <p class="text-muted">The payment could not be completed. Please try again from the POS screen.</p>
+    {% endif %}
+    <a href="{% url 'sales_list' %}" class="btn btn-primary mt-2">View Sales History</a>
+</div>
+{% endblock %}

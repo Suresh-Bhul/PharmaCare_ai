@@ -1,1 +1,51 @@
-This is the update view
+{% extends "base.html" %}
+{% block title %}Purchase {{ purchase.purchase_number }}{% endblock %}
+{% block page_title %}<h1>Purchase {{ purchase.purchase_number }}</h1>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2>{{ purchase.purchase_number }}</h2>
+        <p class="text-muted mb-0">Supplier: {{ purchase.supplier.company_name }} &middot; Date: {{ purchase.purchase_date }}</p>
+    </div>
+    <div class="d-flex gap-2">
+        {% if not purchase.is_purchase_verified %}
+        <form method="post" action="{% url 'purchase_verify' purchase.pk %}" data-confirm="Verify this purchase and add stock to inventory?">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Verify &amp; Add to Stock</button>
+        </form>
+        {% else %}
+        <span class="status-pill success align-self-center"><i class="bi bi-check-circle"></i> Verified</span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3"><div class="stat-card"><div><div class="stat-label">Subtotal</div><div class="stat-value">Rs. {{ purchase.subtotal }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card"><div><div class="stat-label">Discount</div><div class="stat-value">Rs. {{ purchase.discount }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card"><div><div class="stat-label">Tax</div><div class="stat-value">Rs. {{ purchase.tax }}</div></div></div></div>
+    <div class="col-md-3"><div class="stat-card"><div><div class="stat-label">Total</div><div class="stat-value">Rs. {{ purchase.total }}</div></div></div></div>
+</div>
+
+<div class="table-card">
+    <div class="table-toolbar"><h5 class="mb-0">Line Items</h5></div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Medicine</th><th>Batch #</th><th>Expiry</th><th>Qty</th><th>Unit Price</th><th>Discount</th><th>Tax</th><th>Total</th></tr></thead>
+            <tbody>
+            {% for item in items %}
+                <tr>
+                    <td>{{ item.medicine.name }}</td>
+                    <td>{{ item.batch_number }}</td>
+                    <td>{{ item.expiry_date }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>Rs. {{ item.unit_price }}</td>
+                    <td>Rs. {{ item.discount }}</td>
+                    <td>Rs. {{ item.tax }}</td>
+                    <td class="fw-semibold">Rs. {{ item.total }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,1 +1,52 @@
-This is the transaction list
+{% extends "base.html" %}
+{% block title %}Inventory Transactions{% endblock %}
+{% block page_title %}<h1>Inventory Transaction Log</h1>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h2>Transaction Log</h2><p class="text-muted mb-0">Full audit trail of every stock movement</p></div>
+    <a href="{% url 'batch_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back to Inventory</a>
+</div>
+<div class="table-card">
+    <div class="table-toolbar">
+        <form class="d-flex gap-2" method="get">
+            <select name="type" class="form-select form-select-sm" style="width:220px;" onchange="this.form.submit()">
+                <option value="">All Transaction Types</option>
+                {% for value, label in transaction_types %}
+                <option value="{{ value }}" {% if request.GET.type == value %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </form>
+        <span class="text-muted small">{{ page_obj.paginator.count|default:transactions|length }} record(s)</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Date</th><th>Medicine</th><th>Batch</th><th>Type</th><th>Qty</th><th>Previous</th><th>New</th><th>Reference</th></tr></thead>
+            <tbody>
+            {% for t in transactions %}
+                <tr>
+                    <td>{{ t.created_at|date:"M d, Y H:i" }}</td>
+                    <td>{{ t.batch.medicine.name }}</td>
+                    <td>{{ t.batch.batch_number }}</td>
+                    <td>
+                        {% if t.transaction_type == "SALE" or t.transaction_type == "DAMAGE" or t.transaction_type == "EXPIRY" %}
+                            <span class="status-pill danger">{{ t.get_transaction_type_display }}</span>
+                        {% elif t.transaction_type == "PURCHASE" %}
+                            <span class="status-pill success">{{ t.get_transaction_type_display }}</span>
+                        {% else %}
+                            <span class="status-pill info">{{ t.get_transaction_type_display }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ t.quantity }}</td>
+                    <td>{{ t.previous_stock }}</td>
+                    <td>{{ t.new_stock }}</td>
+                    <td>{{ t.reference_id|default:"—" }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="8"><div class="empty-state"><i class="bi bi-clock-history"></i>No stock transactions recorded yet.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% include "includes/pagination.html" %}
+{% endblock %}

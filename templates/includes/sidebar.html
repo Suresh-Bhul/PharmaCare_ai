@@ -1,0 +1,58 @@
+{% load static %}
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <i class="bi bi-capsule-pill"></i>
+        <span>PharmaCare</span>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+            <i class="bi bi-speedometer2"></i><span>Dashboard</span>
+        </a>
+
+        <div class="nav-section-title">Catalog</div>
+        <a href="{% url 'medicine_list' %}" class="nav-link {% if 'medicine' in request.resolver_match.url_name and 'category' not in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-capsule"></i><span>Medicines</span>
+        </a>
+        <a href="{% url 'category_list' %}" class="nav-link {% if 'category' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-tags"></i><span>Categories</span>
+        </a>
+        <a href="{% url 'supplier_list' %}" class="nav-link {% if 'supplier' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-truck"></i><span>Suppliers</span>
+        </a>
+
+        <div class="nav-section-title">Stock</div>
+        <a href="{% url 'batch_list' %}" class="nav-link {% if request.resolver_match.url_name == 'batch_list' %}active{% endif %}">
+            <i class="bi bi-boxes"></i><span>Inventory</span>
+        </a>
+        <a href="{% url 'stock_adjustment_list' %}" class="nav-link {% if 'adjustment' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-sliders"></i><span>Stock Adjustments</span>
+        </a>
+
+        <div class="nav-section-title">Purchasing</div>
+        <a href="{% url 'purchase_list' %}" class="nav-link {% if 'purchase' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-cart-check"></i><span>Purchases</span>
+        </a>
+
+        <div class="nav-section-title">Sales</div>
+        <a href="{% url 'pos' %}" class="nav-link {% if request.resolver_match.url_name == 'pos' %}active{% endif %}">
+            <i class="bi bi-shop"></i><span>POS</span>
+        </a>
+        <a href="{% url 'sales_list' %}" class="nav-link {% if request.resolver_match.url_name == 'sales_list' %}active{% endif %}">
+            <i class="bi bi-receipt"></i><span>Sales History</span>
+        </a>
+
+        <div class="nav-section-title">People</div>
+        <a href="{% url 'patient_list' %}" class="nav-link {% if 'patient' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-people"></i><span>Patients</span>
+        </a>
+        <a href="{% url 'user_list' %}" class="nav-link {% if 'user' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-person-badge"></i><span>Users &amp; Roles</span>
+        </a>
+
+        <div class="nav-section-title">Insights</div>
+        <a href="{% url 'report_dashboard' %}" class="nav-link {% if 'report' in request.resolver_match.url_name %}active{% endif %}">
+            <i class="bi bi-bar-chart-line"></i><span>Reports</span>
+        </a>
+    </nav>
+</aside>

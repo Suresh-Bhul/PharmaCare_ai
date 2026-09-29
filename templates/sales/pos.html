@@ -1,1 +1,69 @@
-point of sale
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Point of Sale{% endblock %}
+{% block page_title %}<h1>Point of Sale</h1>{% endblock %}
+{% block content %}
+<div class="pos-wrapper">
+    <div>
+        <div class="form-card mb-3">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" id="posSearch" class="form-control" placeholder="Search medicine by name or scan barcode..." autofocus>
+            </div>
+        </div>
+
+        <div id="posResults" class="row g-3 pos-search-results">
+            <div class="col-12 empty-state"><i class="bi bi-capsule"></i>Search for a medicine to begin a sale.</div>
+        </div>
+    </div>
+
+    <div class="pos-cart">
+        <div class="p-3 border-bottom">
+            <h5 class="mb-3"><i class="bi bi-cart3"></i> Current Sale</h5>
+            <label class="form-label">Patient</label>
+            <select id="posCustomer" class="form-select mb-2">
+                <option value="">Select patient...</option>
+                {% for c in customers %}
+                <option value="{{ c.id }}">{{ c.full_name }} — {{ c.phone }}</option>
+                {% endfor %}
+            </select>
+            <a href="{% url 'patient_create' %}" class="small">+ Register a new patient</a>
+        </div>
+
+        <div class="pos-cart-items" id="posCartItems">
+            <div class="empty-state py-4"><i class="bi bi-bag"></i>Cart is empty</div>
+        </div>
+
+        <div class="pos-cart-footer">
+            <div class="mb-2">
+                <label class="form-label">Payment Method</label>
+                <select id="posPaymentMethod" class="form-select form-select-sm">
+                    {% for value, label in payment_methods %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label">Discount (Rs.)</label>
+                <input type="number" id="posDiscount" class="form-control form-control-sm" value="0" min="0" step="0.01">
+            </div>
+            <div class="d-flex justify-content-between small mb-1"><span>Sub Total</span><span id="posSubTotal">Rs. 0.00</span></div>
+            <div class="d-flex justify-content-between fw-bold fs-5 mb-2"><span>Total</span><span id="posTotal">Rs. 0.00</span></div>
+            <div id="posError" class="alert alert-danger py-2 small d-none"></div>
+            <button id="posCheckoutBtn" class="btn btn-primary w-100" disabled>
+                <i class="bi bi-check-circle"></i> Complete Sale
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    window.POS_URLS = {
+        search: "{% url 'pos_medicine_search' %}",
+        checkout: "{% url 'pos_checkout' %}"
+    };
+</script>
+<script src="{% static 'js/pos.js' %}"></script>
+{% endblock %}

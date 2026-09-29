@@ -1,1 +1,68 @@
-Invoice
+{% extends "base.html" %}
+{% block title %}Invoice {{ sale.invoice_number }}{% endblock %}
+{% block page_title %}<h1>Invoice {{ sale.invoice_number }}</h1>{% endblock %}
+{% block content %}
+<div class="page-header no-print">
+    <div><h2>Invoice {{ sale.invoice_number }}</h2><p class="text-muted mb-0">Sale receipt</p></div>
+    <div class="d-flex gap-2">
+        <button onclick="window.print()" class="btn btn-outline-secondary"><i class="bi bi-printer"></i> Print</button>
+        <a href="{% url 'sales_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Back</a>
+    </div>
+</div>
+
+<div class="invoice-box">
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <h3 class="mb-0"><i class="bi bi-capsule-pill"></i> PharmaCare</h3>
+            <p class="text-muted mb-0">Pharmacy Management System</p>
+        </div>
+        <div class="text-end">
+            <div class="fw-bold fs-5">{{ sale.invoice_number }}</div>
+            <div class="text-muted">{{ sale.created_at|date:"M d, Y H:i" }}</div>
+            {% if sale.payment_status == "paid" %}<span class="status-pill success mt-1">Paid</span>
+            {% else %}<span class="status-pill warning mt-1">{{ sale.get_payment_status_display }}</span>{% endif %}
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-6">
+            <div class="text-muted small">Billed To</div>
+            <div class="fw-semibold">{{ sale.customer.full_name }}</div>
+            <div>{{ sale.customer.phone }}</div>
+            <div>{{ sale.customer.email }}</div>
+        </div>
+        <div class="col-6 text-md-end">
+            <div class="text-muted small">Payment Method</div>
+            <div class="fw-semibold text-capitalize">{{ sale.get_payment_method_display }}</div>
+        </div>
+    </div>
+
+    <table class="table">
+        <thead><tr><th>Medicine</th><th>Qty</th><th>Unit Price</th><th>Discount</th><th>Tax</th><th class="text-end">Total</th></tr></thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td>{{ item.medicine.name }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>Rs. {{ item.unit_price }}</td>
+                <td>Rs. {{ item.discount }}</td>
+                <td>Rs. {{ item.tax }}</td>
+                <td class="text-end">Rs. {{ item.total }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="row justify-content-end">
+        <div class="col-md-4">
+            <div class="d-flex justify-content-between"><span class="text-muted">Sub Total</span><span>Rs. {{ sale.sub_total }}</span></div>
+            <div class="d-flex justify-content-between"><span class="text-muted">Discount</span><span>- Rs. {{ sale.discount }}</span></div>
+            <div class="d-flex justify-content-between"><span class="text-muted">Tax</span><span>+ Rs. {{ sale.tax }}</span></div>
+            <hr>
+            <div class="d-flex justify-content-between fw-bold fs-5"><span>Total</span><span>Rs. {{ sale.total }}</span></div>
+        </div>
+    </div>
+
+    <p class="text-center text-muted mt-4 mb-0 small">Thank you for choosing PharmaCare. Get well soon!</p>
+</div>
+{% endblock %}

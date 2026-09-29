@@ -1,0 +1,14 @@
+<div class="row g-3">
+    {% for field in form %}
+    <div class="col-md-6">
+        <label class="form-label">{{ field.label }}{% if field.field.required %} <span class="text-danger">*</span>{% endif %}</label>
+        {{ field }}
+        {% if field.help_text %}<div class="helptext">{{ field.help_text }}</div>{% endif %}
+        {% if field.errors %}<ul class="errorlist">{% for e in field.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+    </div>
+    {% endfor %}
+</div>
+<div class="mt-4 d-flex gap-2">
+    <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save Medicine</button>
+    <a href="{% url 'medicine_list' %}" class="btn btn-outline-secondary">Cancel</a>
+</div>

@@ -1,1 +1,127 @@
-Here is the reports dashboards
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block page_title %}<h1>Reports</h1>{% endblock %}
+{% block content %}
+<div class="page-header">
+    <div><h2>Reports</h2><p class="text-muted mb-0">Overview for {{ range_start }} — {{ range_end }}</p></div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="bi bi-cash-coin"></i></div>
+            <div><div class="stat-value">Rs. {{ total_sales_value|floatformat:2 }}</div><div class="stat-label">Sales (last 30 days)</div></div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon bg-blue"><i class="bi bi-cart-check"></i></div>
+            <div><div class="stat-value">Rs. {{ total_purchase_value|floatformat:2 }}</div><div class="stat-label">Purchases (last 30 days, {{ purchase_count_30d }} orders)</div></div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stat-card">
+            <div class="stat-icon bg-orange"><i class="bi bi-exclamation-triangle"></i></div>
+            <div><div class="stat-value">{{ low_stock|length }}</div><div class="stat-label">Medicines Low on Stock</div></div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-8">
+        <div class="chart-card h-100">
+            <h5>Sales Trend (Last 30 Days)</h5>
+            <canvas id="salesTrendChart" height="110"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="chart-card h-100">
+            <h5>Top Selling Medicines</h5>
+            <canvas id="topMedicinesChart" height="150"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-lg-6">
+        <div class="table-card h-100">
+            <div class="table-toolbar"><h5 class="mb-0"><i class="bi bi-exclamation-triangle text-warning"></i> Low Stock Report</h5></div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Medicine</th><th>Stock</th><th>Reorder Level</th></tr></thead>
+                    <tbody>
+                    {% for m in low_stock %}
+                        <tr><td>{{ m.name }}</td><td><span class="status-pill danger">{{ m.total_stock|default:0 }}</span></td><td>{{ m.reorder_level }}</td></tr>
+                    {% empty %}
+                        <tr><td colspan="3"><div class="empty-state py-3"><i class="bi bi-check-circle"></i>Stock levels look healthy.</div></td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="table-card h-100">
+            <div class="table-toolbar"><h5 class="mb-0"><i class="bi bi-hourglass-split text-warning"></i> Expiry Report (60 days)</h5></div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Medicine</th><th>Batch</th><th>Expiry</th><th>Qty</th></tr></thead>
+                    <tbody>
+                    {% for b in expiring %}
+                        <tr><td>{{ b.medicine.name }}</td><td>{{ b.batch_number }}</td><td>{{ b.expiry_date }}</td><td>{{ b.quantity }}</td></tr>
+                    {% empty %}
+                        <tr><td colspan="4"><div class="empty-state py-3"><i class="bi bi-check-circle"></i>Nothing expiring soon.</div></td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="table-card">
+    <div class="table-toolbar"><h5 class="mb-0">Top Selling Medicines — Detail</h5></div>
+    <div class="table-responsive">
+        <table class="table">
+            <thead><tr><th>Medicine</th><th>Units Sold</th><th>Revenue</th></tr></thead>
+            <tbody>
+            {% for m in top_medicines %}
+                <tr><td>{{ m.medicine__name }}</td><td>{{ m.qty_sold }}</td><td>Rs. {{ m.revenue }}</td></tr>
+            {% empty %}
+                <tr><td colspan="3"><div class="empty-state py-3"><i class="bi bi-bar-chart"></i>No sales in this period yet.</div></td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<script>
+new Chart(document.getElementById('salesTrendChart'), {
+    type: 'line',
+    data: {
+        labels: {{ trend_labels|safe }},
+        datasets: [{
+            label: 'Sales (Rs.)',
+            data: {{ trend_values|safe }},
+            borderColor: '#0f766e',
+            backgroundColor: 'rgba(15,118,110,0.1)',
+            fill: true,
+            tension: 0.3,
+        }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { x: { ticks: { maxTicksLimit: 8 } } } }
+});
+
+new Chart(document.getElementById('topMedicinesChart'), {
+    type: 'bar',
+    data: {
+        labels: {{ top_medicine_labels|safe }},
+        datasets: [{ label: 'Units Sold', data: {{ top_medicine_values|safe }}, backgroundColor: '#2563eb' }]
+    },
+    options: { indexAxis: 'y', plugins: { legend: { display: false } } }
+});
+</script>
+{% endblock %}
