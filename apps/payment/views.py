@@ -21,7 +21,7 @@ def payment_callback(request):
         sales_item = SalesItem.objects.filter(sale=sale)
         for item in sales_item:
             create_inventory_txn(
-                batch_number = item.batch,
+                batch = item.batch,
                 transaction_type = TransactionType.SALE,
                 quantity = item.quantity,
                 reference_id = item.id,

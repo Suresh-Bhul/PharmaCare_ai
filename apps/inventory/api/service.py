@@ -3,7 +3,7 @@ from apps.payment.models import PaymentLog, PaymentStatus
 
 
 def create_inventory_txn(**kwargs):
-    batch = kwargs.get('batch_number')
+    batch = kwargs.get('batch')
     transaction_type = kwargs.get('transaction_type')
     quantity = kwargs.get('quantity')
     reference_id=kwargs.get('reference_id')

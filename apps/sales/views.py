@@ -203,7 +203,7 @@ def pos_checkout(request):
                 sale_item = SalesItem.objects.create(sale=sale, **v)
                 batch = v["batch"]
                 create_inventory_txn(
-                    batch_number=batch,
+                    batch = batch,
                     transaction_type=TransactionType.SALE,
                     quantity=v["quantity"],
                     reference_id=sale_item.id,

@@ -85,7 +85,7 @@ def stock_adjustment_list(request):
                 batch.save()
 
                 create_inventory_txn(
-                    batch_number=batch,
+                    batch=batch,
                     transaction_type=TransactionType.MANUAL_ADJUSTMENT,
                     quantity=quantity,
                     reference_id=reason[:20],
