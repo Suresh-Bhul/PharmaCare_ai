@@ -797,7 +797,6 @@ If AI functionality is intended:
 
 # Screenshots / Demo
 
-```markdown
 ## Screenshots
 
 ### Dashboard
